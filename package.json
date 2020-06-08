@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/letsandeepio/tinyapp/issues"
   },
-  "homepage": "https://github.com/letsandeepio/tinyapp#readme"
+  "homepage": "https://github.com/letsandeepio/tinyapp#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
