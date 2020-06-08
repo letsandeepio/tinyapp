@@ -21,3 +21,11 @@ app.get('/urls', (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render('urls_index', templateVars);
 });
+
+app.get('/urls/:url', (req, res) => {
+  let templateVars = {
+    longURL: urlDatabase[req.params.url],
+    shortURL: req.params.url
+  };
+  res.render('urls_show', templateVars);
+});
