@@ -4,8 +4,13 @@ const PORT = 8080; // default port 8080
 
 app.set('view engine', 'ejs');
 
+const urlDatabase = {
+  b2xVn2: 'http://www.lighthouselabs.ca',
+  '9sm5xK': 'http://www.google.com'
+};
+
 const generateRandomString = (n) => {
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUXYZ';
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUXYZ123456789';
   let random = '';
   while (random.length < n) {
     randomAlpha = alphabet[Math.floor(Math.random() * alphabet.length)];
@@ -19,13 +24,8 @@ const generateRandomString = (n) => {
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const urlDatabase = {
-  b2xVn2: 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com'
-};
-
 app.get('/', (req, res) => {
-  res.send('Hello!');
+  res.redirect('/urls');
 });
 
 app.listen(PORT, () => {
@@ -51,6 +51,19 @@ app.get('/urls/:url', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send('Ok'); // Respond with 'Ok' (we will replace this)
+  let longURL = req.body.longURL;
+  let shortURL = generateRandomString(6);
+  urlDatabase[shortURL] = longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
+
+app.get('/u/:shortURL', (req, res) => {
+  let longURL = urlDatabase[req.params.shortURL];
+  if (!longURL) {
+    res.status(404).send('Not found');
+  } else {
+    res.redirect(longURL);
+  }
+});
+
+//simple check
