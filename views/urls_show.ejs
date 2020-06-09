@@ -12,11 +12,30 @@
   <%- include('partials/_header') %>
   <div class="card text-center">
     <div class="card-header"></div>
-    <div class="card-body">
-      <h5 class="card-title">TinyURL for: <%= longURL %></h5>
-      <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
+
+    <h5 class="card-title">TinyURL for: <%= longURL %></h5>
+    <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
+  </div>
+
+  <div class="text-center m-4">
+    <h3>Edit</h3>
+  </div>
+  <div class="container">
+    <div class="d-flex justify-content-center">
+      <div class="d-flex flex-row">
+        <form method="POST" action="<%= shortURL %>" class="form-inline">
+          <div class="form-group mb-2"></div>
+          <label for="New URL">Enter a new URL:</label>
+          <input class="form-control" type="text" name="newURL" placeholder="http://" style="width: 300px; margin: 1em">
+          <button type="submit" class="btn btn-primary">Edit</button>
+      </div>
     </div>
-    <div class="card-footer text-muted"></div>
+  </div>
+  </form>
+
+  </div>
+
+  <div class="card-footer text-muted"></div>
   </div>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

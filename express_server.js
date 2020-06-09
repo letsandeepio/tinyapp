@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-var morgan = require('morgan');
+const morgan = require('morgan');
 
 const PORT = 8080; // default port 8080
 
@@ -16,7 +16,7 @@ const generateRandomString = (n) => {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUXYZ123456789';
   let random = '';
   while (random.length < n) {
-    randomAlpha = alphabet[Math.floor(Math.random() * alphabet.length)];
+    let randomAlpha = alphabet[Math.floor(Math.random() * alphabet.length)];
     random += Math.round(Math.random())
       ? randomAlpha
       : randomAlpha.toLowerCase();
@@ -71,5 +71,10 @@ app.get('/u/:shortURL', (req, res) => {
 
 app.post('/urls/:shortURL/delete', (req, res) => {
   delete urlDatabase[req.params.shortURL];
+  res.redirect(`/urls`);
+});
+
+app.post('/urls/:shortURL', (req, res) => {
+  urlDatabase[req.params.shortURL] = req.body.newURL;
   res.redirect(`/urls`);
 });
