@@ -10,7 +10,7 @@ const {
   addUserToDB,
   isEmailRegistered,
   validate,
-  getUserByEmail
+  getUserIDByEmail
 } = require('./helpers');
 
 const { users, urlDatabase } = require('./stores');
@@ -69,7 +69,7 @@ app.get('/u/:shortURL', (req, res) => {
 
 app.get('/register', (req, res) => {
   const ID = req.cookies['user_id'];
-  const templateVars = { urls: urlDatabase, user: getUserByID(users, ID) };
+  const templateVars = { user: getUserByID(users, ID) };
 
   res.render('register', templateVars);
 });
@@ -105,7 +105,7 @@ app.post('/login', (req, res) => {
   } else if (!isEmailRegistered(email)) {
     res.status(403).send('User does not exist.');
   } else if (validate(users, email, password)) {
-    const userID = getUserByEmail(users, email).id;
+    const userID = getUserIDByEmail(users, email);
     res.cookie('user_id', userID);
     res.redirect(`/urls`);
   } else {
@@ -120,7 +120,7 @@ app.post('/logout', (req, res) => {
 
 app.get('/login', (req, res) => {
   const ID = req.cookies['user_id'];
-  const templateVars = { urls: urlDatabase, user: getUserByID(users, ID) };
+  const templateVars = { user: getUserByID(users, ID) };
 
   res.render('login', templateVars);
 });

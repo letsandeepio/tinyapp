@@ -24,7 +24,6 @@ const addUserToDB = (users, id, email, password) => {
 
 const isEmailRegistered = (users, email) => {
   for (const user in users) {
-    console.log(users[user].email + '===' + email);
     if (users[user].email === email) return true;
   }
   return false;
@@ -37,8 +36,8 @@ const validate = (users, email, password) => {
   );
 };
 
-const getUserByEmail = (users, email) => {
-  return Object.values(users).find((user) => user.email === email);
+const getUserIDByEmail = (users, email) => {
+  return Object.values(users).find((user) => user.email === email).id;
 };
 
 module.exports = {
@@ -47,5 +46,5 @@ module.exports = {
   addUserToDB,
   isEmailRegistered,
   validate,
-  getUserByEmail
+  getUserIDByEmail
 };
