@@ -9,7 +9,7 @@ const {
   getUserByID,
   addUserToDB,
   isEmailRegistered,
-  validate,
+  validateUser,
   getUserIDByEmail
 } = require('./helpers');
 
@@ -22,12 +22,12 @@ app.use(morgan('tiny'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  res.redirect('/urls');
-});
-
 app.listen(PORT, () => {
   console.log(`magic port is ${PORT}!`);
+});
+
+app.get('/', (req, res) => {
+  res.redirect('/urls');
 });
 
 app.get('/urls', (req, res) => {
@@ -104,7 +104,7 @@ app.post('/login', (req, res) => {
     res.status(400).send('Please provide valid credentials.');
   } else if (!isEmailRegistered(email)) {
     res.status(403).send('User does not exist.');
-  } else if (validate(users, email, password)) {
+  } else if (validateUser(users, email, password)) {
     const userID = getUserIDByEmail(users, email);
     res.cookie('user_id', userID);
     res.redirect(`/urls`);
@@ -112,7 +112,7 @@ app.post('/login', (req, res) => {
     res.status(403).send('Password and email do not match.');
   }
 });
-//ss
+
 app.post('/logout', (req, res) => {
   res.clearCookie('user_id');
   res.redirect('/urls');
@@ -121,6 +121,5 @@ app.post('/logout', (req, res) => {
 app.get('/login', (req, res) => {
   const ID = req.cookies['user_id'];
   const templateVars = { user: getUserByID(users, ID) };
-
   res.render('login', templateVars);
 });
