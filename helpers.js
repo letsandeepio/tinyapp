@@ -53,6 +53,20 @@ const updateURL = (db, shortURL, newURL) => {
   db[shortURL].longURL = newURL;
 };
 
+const getStats = (array) => {
+  const count = array.length;
+  const uniqueCount = caculateUniqueVisits(array, 'visitor_id');
+  return { count, uniqueCount };
+};
+
+const caculateUniqueVisits = (array, attribute) => {
+  let unique = [];
+  for (const item of array) {
+    if (!unique.includes(item[attribute])) unique.push(item[attribute]);
+  }
+  return unique.length;
+};
+
 module.exports = {
   generateRandomString,
   getUserByID,
@@ -62,5 +76,6 @@ module.exports = {
   getUserIDByEmail,
   urlsForUser,
   updateURL,
-  addURLtoDB
+  addURLtoDB,
+  getStats
 };

@@ -15,7 +15,8 @@ const {
   getUserIDByEmail,
   urlsForUser,
   updateURL,
-  addURLtoDB
+  addURLtoDB,
+  getStats
 } = require('./helpers');
 
 const { users, urlDatabase, logDB } = require('./stores');
@@ -60,11 +61,17 @@ app.get('/urls/:url', (req, res) => {
   const ID = req.session.user_id;
   const shortURL = req.params.url;
 
+  const allVisitsData = logDB[shortURL];
+  const { count, uniqueCount } = getStats(allVisitsData);
+
   if (urlDatabase[shortURL] && urlDatabase[shortURL].userID === ID) {
     const templateVars = {
       longURL: urlDatabase[req.params.url].longURL,
       shortURL: req.params.url,
-      user: getUserByID(users, ID)
+      user: getUserByID(users, ID),
+      visits: allVisitsData,
+      count: count,
+      uniqueCount: uniqueCount
     };
     res.render('urls_show', templateVars);
   } else {
@@ -72,11 +79,16 @@ app.get('/urls/:url', (req, res) => {
   }
 });
 
+const addURLtoLogDB = (loggingDatabase, shortURL) => {
+  loggingDatabase[shortURL] = [];
+};
+
 app.post('/urls', (req, res) => {
   const ID = req.session.user_id;
   const longURL = req.body.longURL;
   const shortURL = generateRandomString(6);
   addURLtoDB(urlDatabase, longURL, shortURL, ID);
+  addURLtoLogDB(logDB, shortURL);
   res.redirect(`/urls/${shortURL}`);
 });
 

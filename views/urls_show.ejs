@@ -32,7 +32,30 @@
       </div>
     </div>
   </div>
-  <div class="container"></div>
+  <div class="container">
+    <h1>Total Visits: <%= count %> </h1>
+    <h1>Unique Visits: <%= uniqueCount %> </h1>
+  </div>
+
+
+  <h3>My URLs</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">timestamp</th>
+        <th scope="col">visitor</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <% for(let visit in visits) { %>
+      <tr>
+        <td><%= visits[visit].timestamp %></td>
+        <td><%= visits[visit].visitor_id %></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
 
   </div>
 
