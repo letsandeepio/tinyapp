@@ -29,11 +29,8 @@ const isEmailRegistered = (users, email) => {
   return false;
 };
 
-const validateUser = (users, email, password) => {
-  return (
-    Object.values(users).find((user) => user.email === email).password ===
-    password
-  );
+const getHashedPassword = (users, email) => {
+  return Object.values(users).find((user) => user.email === email).password;
 };
 
 const getUserIDByEmail = (users, email) => {
@@ -56,7 +53,7 @@ module.exports = {
   getUserByID,
   addUserToDB,
   isEmailRegistered,
-  validateUser,
+  getHashedPassword,
   getUserIDByEmail,
   urlsForUser,
   updateURL

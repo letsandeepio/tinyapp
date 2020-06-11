@@ -3,13 +3,14 @@ const app = express();
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
 
 const {
   generateRandomString,
   getUserByID,
   addUserToDB,
   isEmailRegistered,
-  validateUser,
+  getHashedPassword,
   getUserIDByEmail,
   urlsForUser,
   updateURL
@@ -34,7 +35,7 @@ app.get('/', (req, res) => {
 
 app.get('/urls', (req, res) => {
   const ID = req.cookies['user_id'];
-  console.log(urlsForUser(users, ID));
+  //console.log(urlsForUser(users, ID));
   const templateVars = {
     urls: urlsForUser(urlDatabase, ID),
     user: getUserByID(users, ID)
@@ -64,7 +65,7 @@ app.get('/urls/:url', (req, res) => {
 
 const addURLtoDB = (db, longURL, shortURL, userID) => {
   db[shortURL] = { longURL, userID };
-  console.log(db);
+  //console.log(db);
 };
 
 app.post('/urls', (req, res) => {
@@ -99,13 +100,15 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
   if (!email || !password) {
     res.status(400).send('Please provide valid credentials.');
   } else if (isEmailRegistered(users, email)) {
     res.status(400).send('A user already exists with that email.');
   } else {
     const userID = 'user' + generateRandomString(6);
-    addUserToDB(users, userID, email, password);
+    addUserToDB(users, userID, email, hashedPassword);
     res.cookie('user_id', userID);
     res.redirect(`/urls`);
   }
@@ -140,7 +143,7 @@ app.post('/login', (req, res) => {
     res.status(400).send('Please provide valid credentials.');
   } else if (!isEmailRegistered(users, email)) {
     res.status(403).send('User does not exist.');
-  } else if (validateUser(users, email, password)) {
+  } else if (bcrypt.compareSync(password, getHashedPassword(users, email))) {
     const userID = getUserIDByEmail(users, email);
     res.cookie('user_id', userID);
     res.redirect(`/urls`);
@@ -158,4 +161,8 @@ app.get('/login', (req, res) => {
   const ID = req.cookies['user_id'];
   const templateVars = { user: getUserByID(users, ID) };
   res.render('login', templateVars);
+});
+
+app.get('/users', (req, res) => {
+  res.send(JSON.stringify(users));
 });
