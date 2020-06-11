@@ -4,13 +4,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
-
-app.use(
-  cookieSession({
-    name: 'session',
-    keys: ['secretkey', 'secretkey2']
-  })
-);
+const methodOverride = require('method-override');
 
 const {
   generateRandomString,
@@ -26,11 +20,18 @@ const {
 
 const { users, urlDatabase } = require('./stores');
 
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 
 app.set('view engine', 'ejs');
 app.use(morgan('tiny'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: ['secretkey', 'secretkey2']
+  })
+);
+app.use(methodOverride('_method'));
 
 app.listen(PORT, () => {
   console.log(`magic port is ${PORT}!`);
@@ -58,7 +59,8 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:url', (req, res) => {
   const ID = req.session.user_id;
   const shortURL = req.params.url;
-  if (urlDatabase[shortURL].userID === ID) {
+
+  if (urlDatabase[shortURL] && urlDatabase[shortURL].userID === ID) {
     const templateVars = {
       longURL: urlDatabase[req.params.url].longURL,
       shortURL: req.params.url,
@@ -116,7 +118,7 @@ app.post('/register', (req, res) => {
   }
 });
 
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.delete('/urls/:shortURL/delete', (req, res) => {
   const ID = req.session.user_id;
   const shortURL = req.params.shortURL;
   if (urlDatabase[shortURL].userID === ID) {
@@ -127,7 +129,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   }
 });
 
-app.post('/urls/:shortURL', (req, res) => {
+app.put('/urls/:shortURL', (req, res) => {
   const ID = req.session.user_id;
   const shortURL = req.params.shortURL;
   if (urlDatabase[shortURL].userID === ID) {
