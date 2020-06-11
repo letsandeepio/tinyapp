@@ -1,9 +1,16 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const cookieSession = require('cookie-session');
+
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: ['secretkey', 'secretkey2']
+  })
+);
 
 const {
   generateRandomString,
@@ -22,7 +29,6 @@ const PORT = 8080; // default port 8080
 
 app.set('view engine', 'ejs');
 app.use(morgan('tiny'));
-app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(PORT, () => {
@@ -34,7 +40,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  const ID = req.cookies['user_id'];
+  const ID = req.session.user_id;
   //console.log(urlsForUser(users, ID));
   const templateVars = {
     urls: urlsForUser(urlDatabase, ID),
@@ -44,12 +50,12 @@ app.get('/urls', (req, res) => {
 });
 
 app.get('/urls/new', (req, res) => {
-  const ID = req.cookies['user_id'];
+  const ID = req.session.user_id;
   res.render('urls_new', { user: getUserByID(users, ID) });
 });
 
 app.get('/urls/:url', (req, res) => {
-  const ID = req.cookies['user_id'];
+  const ID = req.session.user_id;
   const shortURL = req.params.url;
   if (urlDatabase[shortURL].userID === ID) {
     const templateVars = {
@@ -69,7 +75,7 @@ const addURLtoDB = (db, longURL, shortURL, userID) => {
 };
 
 app.post('/urls', (req, res) => {
-  const ID = req.cookies['user_id'];
+  const ID = req.session.user_id;
   const longURL = req.body.longURL;
   const shortURL = generateRandomString(6);
   addURLtoDB(urlDatabase, longURL, shortURL, ID);
@@ -92,7 +98,7 @@ app.get('/u/:shortURL', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  const ID = req.cookies['user_id'];
+  const ID = req.session.user_id;
   const templateVars = { user: getUserByID(users, ID) };
 
   res.render('register', templateVars);
@@ -109,13 +115,13 @@ app.post('/register', (req, res) => {
   } else {
     const userID = 'user' + generateRandomString(6);
     addUserToDB(users, userID, email, hashedPassword);
-    res.cookie('user_id', userID);
+    req.session.user_id = userID;
     res.redirect(`/urls`);
   }
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  const ID = req.cookies['user_id'];
+  const ID = req.session.user_id;
   const shortURL = req.params.shortURL;
   if (urlDatabase[shortURL].userID === ID) {
     delete urlDatabase[req.params.shortURL];
@@ -126,7 +132,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 });
 
 app.post('/urls/:shortURL', (req, res) => {
-  const ID = req.cookies['user_id'];
+  const ID = req.session.user_id;
   const shortURL = req.params.shortURL;
   if (urlDatabase[shortURL].userID === ID) {
     const newURL = req.body.newURL;
@@ -145,7 +151,7 @@ app.post('/login', (req, res) => {
     res.status(403).send('User does not exist.');
   } else if (bcrypt.compareSync(password, getHashedPassword(users, email))) {
     const userID = getUserIDByEmail(users, email);
-    res.cookie('user_id', userID);
+    req.session.user_id = userID;
     res.redirect(`/urls`);
   } else {
     res.status(403).send('Password and email do not match.');
@@ -158,7 +164,7 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  const ID = req.cookies['user_id'];
+  const ID = req.session.user_id;
   const templateVars = { user: getUserByID(users, ID) };
   res.render('login', templateVars);
 });
