@@ -40,11 +40,24 @@ const getUserIDByEmail = (users, email) => {
   return Object.values(users).find((user) => user.email === email).id;
 };
 
+const urlsForUser = (database, id) => {
+  return Object.keys(database).reduce((r, e) => {
+    if (database[e].userID === id) r[e] = database[e];
+    return r;
+  }, {});
+};
+
+const updateURL = (db, shortURL, newURL) => {
+  db[shortURL].longURL = newURL;
+};
+
 module.exports = {
   generateRandomString,
   getUserByID,
   addUserToDB,
   isEmailRegistered,
   validateUser,
-  getUserIDByEmail
+  getUserIDByEmail,
+  urlsForUser,
+  updateURL
 };

@@ -12,8 +12,8 @@ const users = {
 };
 
 const urlDatabase = {
-  b2xVn2: 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com'
+  b6UTxQ: { longURL: 'https://www.tsn.ca', userID: 'userRandomID' },
+  i3BoGr: { longURL: 'https://www.google.ca', userID: 'user2RandomID' }
 };
 
 module.exports = { users, urlDatabase };

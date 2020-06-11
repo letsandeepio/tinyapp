@@ -10,7 +10,9 @@ const {
   addUserToDB,
   isEmailRegistered,
   validateUser,
-  getUserIDByEmail
+  getUserIDByEmail,
+  urlsForUser,
+  updateURL
 } = require('./helpers');
 
 const { users, urlDatabase } = require('./stores');
@@ -32,7 +34,11 @@ app.get('/', (req, res) => {
 
 app.get('/urls', (req, res) => {
   const ID = req.cookies['user_id'];
-  const templateVars = { urls: urlDatabase, user: getUserByID(users, ID) };
+  console.log(urlsForUser(users, ID));
+  const templateVars = {
+    urls: urlsForUser(urlDatabase, ID),
+    user: getUserByID(users, ID)
+  };
   res.render('urls_index', templateVars);
 });
 
@@ -43,26 +49,43 @@ app.get('/urls/new', (req, res) => {
 
 app.get('/urls/:url', (req, res) => {
   const ID = req.cookies['user_id'];
-  const templateVars = {
-    longURL: urlDatabase[req.params.url],
-    shortURL: req.params.url,
-    user: getUserByID(users, ID)
-  };
-  res.render('urls_show', templateVars);
+  const shortURL = req.params.url;
+  if (urlDatabase[shortURL].userID === ID) {
+    const templateVars = {
+      longURL: urlDatabase[req.params.url].longURL,
+      shortURL: req.params.url,
+      user: getUserByID(users, ID)
+    };
+    res.render('urls_show', templateVars);
+  } else {
+    res.status(400).send('Bad request');
+  }
 });
 
+const addURLtoDB = (db, longURL, shortURL, userID) => {
+  db[shortURL] = { longURL, userID };
+  console.log(db);
+};
+
 app.post('/urls', (req, res) => {
-  let longURL = req.body.longURL;
-  let shortURL = generateRandomString(6);
-  urlDatabase[shortURL] = longURL;
+  const ID = req.cookies['user_id'];
+  const longURL = req.body.longURL;
+  const shortURL = generateRandomString(6);
+  addURLtoDB(urlDatabase, longURL, shortURL, ID);
   res.redirect(`/urls/${shortURL}`);
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
-  if (!longURL) {
+  //console.log(JSON.stringify(req.params.shortURL));
+  //console.log(JSON.stringify(urlDatabase));
+  //console.log(urlDatabase[req.params.shortURL].longURL);
+
+  const shortURLObject = urlDatabase[req.params.shortURL];
+  if (!shortURLObject) {
     res.status(404).send('Not found');
   } else {
+    const longURL = shortURLObject.longURL;
+    // res.send('redirecting to ' + longURL);
     res.redirect(longURL);
   }
 });
@@ -89,13 +112,26 @@ app.post('/register', (req, res) => {
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect(`/urls`);
+  const ID = req.cookies['user_id'];
+  const shortURL = req.params.shortURL;
+  if (urlDatabase[shortURL].userID === ID) {
+    delete urlDatabase[req.params.shortURL];
+    res.redirect(`/urls`);
+  } else {
+    res.status(400).send('Bad request');
+  }
 });
 
 app.post('/urls/:shortURL', (req, res) => {
-  urlDatabase[req.params.shortURL] = req.body.newURL;
-  res.redirect(`/urls`);
+  const ID = req.cookies['user_id'];
+  const shortURL = req.params.shortURL;
+  if (urlDatabase[shortURL].userID === ID) {
+    const newURL = req.body.newURL;
+    updateURL(urlDatabase, shortURL, newURL);
+    res.redirect(`/urls`);
+  } else {
+    res.status(400).send('Bad request');
+  }
 });
 
 app.post('/login', (req, res) => {

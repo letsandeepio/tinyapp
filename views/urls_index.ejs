@@ -13,6 +13,9 @@
 
 <body>
   <%- include('partials/_header') %>
+
+  <% if(user){ %>
+
   <main style="margin: 1em;">
     <h3>My URLs</h3>
     <table class="table">
@@ -29,7 +32,7 @@
         <tr>
           <form method="POST" action="urls/<%= url %>/delete">
             <td><%= url %></td>
-            <td><%= urls[url] %></td>
+            <td><%= urls[url].longURL %></td>
             <td><a href="urls/<%= url %>" class="btn btn-primary">Edit</td>
             <td><input type="submit" value="Delete" class="btn btn-outline-danger"></td>
 
@@ -38,6 +41,12 @@
         <% } %>
       </tbody>
     </table>
+
+    <% } else{ %>
+    <div class="alert alert-danger" role="alert">
+      You must be logged in to view saved URLS.
+    </div>
+    <% } %>
   </main>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

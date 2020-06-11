@@ -12,7 +12,7 @@
   <title>New URL - TinyApp Example</title>
 </head>
 
-<body>
+<body onload="reDirect();">
 
   <%- include('partials/_header') %>
 
@@ -31,13 +31,24 @@
 
     <% } else{ %>
     <div class="alert alert-danger" role="alert">
-      You must be logged in to create a new short URL.
+      You must be logged in to create a new short URL. Redirecting to login page...
     </div>
     <% } %>
 
 
 
   </main>
+
+  <script>
+    function reDirect() {
+      let user = "<%= user %>"
+      if (!user) {
+        window.setTimeout(function() {
+          window.location.href = "/login"
+        }, 2000)
+      }
+    }
+  </script>
 
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
