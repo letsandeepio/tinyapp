@@ -18,7 +18,7 @@ const {
   addURLtoDB
 } = require('./helpers');
 
-const { users, urlDatabase } = require('./stores');
+const { users, urlDatabase, logDB } = require('./stores');
 
 const PORT = 8080;
 
@@ -80,15 +80,28 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
-app.get('/u/:shortURL', (req, res) => {
-  //console.log(JSON.stringify(req.params.shortURL));
-  //console.log(JSON.stringify(urlDatabase));
-  //console.log(urlDatabase[req.params.shortURL].longURL);
+const logVisit = (visitorID, shortURL, logDatabase) => {
+  if (!logDatabase[shortURL]) logDatabase[shortURL] = [];
+  logDatabase[shortURL].push({
+    timestamp: new Date(),
+    visitor_id: visitorID
+  });
+  console.log(logDatabase);
+};
 
+app.get('/u/:shortURL', (req, res) => {
   const shortURLObject = urlDatabase[req.params.shortURL];
+
   if (!shortURLObject) {
     res.status(404).send('Not found');
   } else {
+    let visitorID = req.session.visitor_id;
+    if (!visitorID) {
+      visitorID = generateRandomString(3) + '_' + generateRandomString(3);
+      req.session.visitor_id = visitorID;
+    }
+    const shortURL = req.params.shortURL;
+    logVisit(visitorID, shortURL, logDB);
     const longURL = shortURLObject.longURL;
     // res.send('redirecting to ' + longURL);
     res.redirect(longURL);

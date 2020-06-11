@@ -16,4 +16,6 @@ const urlDatabase = {
   i3BoGr: { longURL: 'https://www.google.ca', userID: 'user2RandomID' }
 };
 
-module.exports = { users, urlDatabase };
+const logDB = {};
+
+module.exports = { users, urlDatabase, logDB };
