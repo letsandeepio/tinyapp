@@ -102,7 +102,7 @@ app.post('/login', (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).send('Please provide valid credentials.');
-  } else if (!isEmailRegistered(email)) {
+  } else if (!isEmailRegistered(users, email)) {
     res.status(403).send('User does not exist.');
   } else if (validateUser(users, email, password)) {
     const userID = getUserIDByEmail(users, email);
