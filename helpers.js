@@ -10,6 +10,10 @@ const generateRandomString = (n) => {
   return random;
 };
 
+const addURLtoDB = (db, longURL, shortURL, userID) => {
+  db[shortURL] = { longURL, userID };
+};
+
 const getUserByID = (users, ID) => {
   return users[ID];
 };
@@ -34,7 +38,8 @@ const getHashedPassword = (users, email) => {
 };
 
 const getUserIDByEmail = (users, email) => {
-  return Object.values(users).find((user) => user.email === email).id;
+  const user = Object.values(users).find((user) => user.email === email);
+  return user ? user.id : undefined;
 };
 
 const urlsForUser = (database, id) => {
@@ -56,5 +61,6 @@ module.exports = {
   getHashedPassword,
   getUserIDByEmail,
   urlsForUser,
-  updateURL
+  updateURL,
+  addURLtoDB
 };

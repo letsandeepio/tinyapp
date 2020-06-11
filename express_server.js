@@ -20,7 +20,8 @@ const {
   getHashedPassword,
   getUserIDByEmail,
   urlsForUser,
-  updateURL
+  updateURL,
+  addURLtoDB
 } = require('./helpers');
 
 const { users, urlDatabase } = require('./stores');
@@ -68,11 +69,6 @@ app.get('/urls/:url', (req, res) => {
     res.status(400).send('Bad request');
   }
 });
-
-const addURLtoDB = (db, longURL, shortURL, userID) => {
-  db[shortURL] = { longURL, userID };
-  //console.log(db);
-};
 
 app.post('/urls', (req, res) => {
   const ID = req.session.user_id;
