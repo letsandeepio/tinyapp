@@ -42,12 +42,11 @@ const getUserIDByEmail = (users, email) => {
   return user ? user.id : undefined;
 };
 
+//filter out the database for url belongig to this user
+//then attach the stats (analytics object for each url) to each of the url (count & unique count)
 const urlsForUser = (database, id, logDB) => {
   return Object.keys(database).reduce((r, e) => {
     if (database[e].userID === id) {
-      //console.log('cum' + JSON.stringify(r));
-      //console.log('current' + e);
-      //console.log(JSON.stringify({ ...database[e], ...getStats(logDB[e]) }));
       r[e] = { ...database[e], ...getStats(logDB[e]) };
     }
     return r;
@@ -84,7 +83,7 @@ const addURLtoLogDB = (loggingDatabase, shortURL) => {
   loggingDatabase[shortURL] = [];
 };
 
-//copies from stackoverflow
+//copied from stackoverflow
 const formatDate = (date) => {
   let d = new Date(date);
   let month = '' + (d.getMonth() + 1);

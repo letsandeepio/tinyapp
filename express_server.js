@@ -74,6 +74,7 @@ app.get('/urls/:url', (req, res) => {
 
     const templateVars = {
       longURL: urlDatabase[shortURL].longURL,
+      dateCreated: urlDatabase[shortURL].dateCreated,
       shortURL: shortURL,
       user: getUserByID(users, ID),
       visits: allVisitsData,

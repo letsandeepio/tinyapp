@@ -44,8 +44,8 @@
                   <td><%= urls[url].dateCreated%></td>
                   <td><%= url %></td>
                   <td><%= urls[url].longURL %></td>
-                  <td><%= urls[url].count %></td>
                   <td><%= urls[url].uniqueCount %></td>
+                  <td><%= urls[url].count %></td>
                   <td><a href="urls/<%= url %>" class="button is-success is-light is-small">Edit</td>
                   <td><input type="submit" value="Delete" class="button is-danger is-light is-small"></td>
                 </form>
@@ -57,6 +57,10 @@
       </div>
     </div>
   </section>
+  <section class='section'>
+    <div class="box"><a href="/urls/new">Create New URL</a>
+  </section>
+  </div>
 
 
   <% } else{ %>
