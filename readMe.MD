@@ -1,6 +1,6 @@
 # TinyApp Project
 
-TinyApp (rebranded as TeenyApp) is a full stack web application built with Node and Express, Bulma.css that allows users to shorten long URLs (à la bit.ly).
+TinyApp (rebranded as TeenyApp) is a full stack web application built with Node, Express and Bulma.css that allows users to shorten long URLs (à la bit.ly).
 
 # About
 
@@ -10,8 +10,8 @@ Program.
 
 ## Salient Technical Features
 
-- Use method-overide to use REST PUT & Delete APIs and route handlin in server side logic.
-- Inbuilt page analytics using cookies for each individual, logging all visits & displaying both total & unique visits for each genereted Short URL.
+- Use method-overide to use REST PUT & DELETE APIs and proper route handling in server side logic.
+- Inbuilt page analytics using cookies for each individual visitor, logging all visits & displaying both total & unique visits for each generated Short URL.
 
 ## Final Product
 

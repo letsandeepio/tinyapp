@@ -10,8 +10,8 @@ const generateRandomString = (n) => {
   return random;
 };
 
-const addURLtoDB = (db, longURL, shortURL, userID) => {
-  db[shortURL] = { longURL, userID };
+const addURLtoDB = (db, longURL, shortURL, userID, dateCreated) => {
+  db[shortURL] = { longURL, userID, dateCreated };
 };
 
 const getUserByID = (users, ID) => {
@@ -42,9 +42,14 @@ const getUserIDByEmail = (users, email) => {
   return user ? user.id : undefined;
 };
 
-const urlsForUser = (database, id) => {
+const urlsForUser = (database, id, logDB) => {
   return Object.keys(database).reduce((r, e) => {
-    if (database[e].userID === id) r[e] = database[e];
+    if (database[e].userID === id) {
+      //console.log('cum' + JSON.stringify(r));
+      //console.log('current' + e);
+      //console.log(JSON.stringify({ ...database[e], ...getStats(logDB[e]) }));
+      r[e] = { ...database[e], ...getStats(logDB[e]) };
+    }
     return r;
   }, {});
 };
@@ -79,6 +84,19 @@ const addURLtoLogDB = (loggingDatabase, shortURL) => {
   loggingDatabase[shortURL] = [];
 };
 
+//copies from stackoverflow
+const formatDate = (date) => {
+  let d = new Date(date);
+  let month = '' + (d.getMonth() + 1);
+  let day = '' + d.getDate();
+  let year = d.getFullYear();
+
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+
+  return [year, month, day].join('-');
+};
+
 module.exports = {
   generateRandomString,
   getUserByID,
@@ -91,5 +109,6 @@ module.exports = {
   addURLtoDB,
   getStats,
   logVisit,
-  addURLtoLogDB
+  addURLtoLogDB,
+  formatDate
 };

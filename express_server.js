@@ -18,7 +18,8 @@ const {
   addURLtoDB,
   getStats,
   logVisit,
-  addURLtoLogDB
+  addURLtoLogDB,
+  formatDate
 } = require('./helpers');
 
 const { users, urlDatabase, logDB } = require('./stores');
@@ -53,7 +54,7 @@ app.get('/', (req, res) => {
 
 app.get('/urls', (req, res) => {
   const templateVars = {
-    urls: urlsForUser(urlDatabase, req.userID),
+    urls: urlsForUser(urlDatabase, req.userID, logDB),
     user: getUserByID(users, req.userID)
   };
   res.render('urls_index', templateVars);
@@ -93,7 +94,13 @@ app.post('/urls', (req, res) => {
   if (req.userID) {
     const longURL = req.body.longURL;
     const shortURL = generateRandomString(6);
-    addURLtoDB(urlDatabase, longURL, shortURL, req.userID);
+    addURLtoDB(
+      urlDatabase,
+      longURL,
+      shortURL,
+      req.userID,
+      formatDate(new Date())
+    );
     addURLtoLogDB(logDB, shortURL);
     res.redirect(`/urls/${shortURL}`);
   } else {
@@ -214,11 +221,19 @@ app.get('/login', (req, res) => {
   res.render('login', templateVars);
 });
 
+app.get('/about', (req, res) => {
+  const templateVars = { user: getUserByID(users, req.userID) };
+  res.render('about', templateVars);
+});
+
 app.get('/users', (req, res) => {
   res.send(JSON.stringify(users));
 });
 
-app.get('/about', (req, res) => {
-  const templateVars = { user: getUserByID(users, req.userID) };
-  res.render('about', templateVars);
+app.get('/databaseofurl', (req, res) => {
+  res.send(JSON.stringify(urlDatabase));
+});
+
+app.get('/databaseoflog', (req, res) => {
+  res.send(JSON.stringify(logDB));
 });
