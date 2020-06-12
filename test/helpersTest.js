@@ -9,7 +9,9 @@ const {
   getHashedPassword,
   urlsForUser,
   updateURL,
-  addURLtoDB
+  addURLtoDB,
+  getStats,
+  logVisit
 } = require('../helpers.js');
 
 const testUsers = {
@@ -28,6 +30,20 @@ const testUsers = {
 const testURlDatabase = {
   b6UTxQ: { longURL: 'https://www.tsn.ca', userID: 'userRandomID' },
   i3BoGr: { longURL: 'https://www.google.ca', userID: 'user2RandomID' }
+};
+
+const testLogData = {
+  d9ETam: [
+    { timestamp: '2020-06-12T13:12:37.558Z', visitor_id: 'sQ8_4cg' },
+    { timestamp: '2020-06-12T13:12:49.623Z', visitor_id: 'sQ8_4cg' }
+  ],
+  oDSLiS: [{ timestamp: '2020-06-12T13:12:28.939Z', visitor_id: 'sQ8_4cg' }],
+  q7AbLs: [
+    { timestamp: '2020-06-12T13:12:20.252Z', visitor_id: 'sQ8_4cg' },
+    { timestamp: '2020-06-12T13:13:14.152Z', visitor_id: 'sQ8_4cg' },
+    { timestamp: '2020-06-12T13:13:24.866Z', visitor_id: 'gB6_Dh4' },
+    { timestamp: '2020-06-12T13:13:34.622Z', visitor_id: 'gB6_Dh4' }
+  ]
 };
 
 describe('getUserByEmail', function () {
@@ -131,5 +147,28 @@ describe('addURLtoDB', function () {
       userID: 'User3Random'
     };
     assert.deepEqual(actualOutput, expectedOutput);
+  });
+});
+
+describe('getStats', function () {
+  it('should return number of visits & unique visits from the given array containing log data', function () {
+    const shortURLLogArray = testLogData['q7AbLs'];
+    const actualOutput = getStats(shortURLLogArray);
+    const expectedOutput = { count: 4, uniqueCount: 2 };
+    assert.deepEqual(actualOutput, expectedOutput);
+  });
+});
+
+describe('logVisit', function () {
+  it("should log the visit data to the given logging database (create new entry if it doesn't exists.", function () {
+    logVisit('test_vis', 'tesurl', testLogData);
+    const actualOutput = testLogData['tesurl'];
+    assert.isArray(actualOutput);
+  });
+
+  it('should log the visit data to the given logging database (update existing entry if it exists.', function () {
+    logVisit('test_vis', 'tesurl', testLogData);
+    const actualOutput = testLogData['tesurl'];
+    assert.lengthOf(actualOutput, 2, 'log entry for URL is now 2');
   });
 });

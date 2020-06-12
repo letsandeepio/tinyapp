@@ -73,7 +73,6 @@ const logVisit = (visitorID, shortURL, logDatabase) => {
     timestamp: new Date(),
     visitor_id: visitorID
   });
-  console.log(logDatabase);
 };
 
 module.exports = {
