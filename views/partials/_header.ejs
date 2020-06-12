@@ -1,23 +1,72 @@
 <header>
-  <nav class="navbar navbar-expand-md navbar-dark bg-success">
-    <a class="navbar-brand" href="/urls">TinyApp</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-      </div>
-    </div><% if(user){ %>
-    <form class="form-inline" action="/logout" method="POST"><span class='text-light'>Welcome, <%= user.email %>
-        &nbsp;</span> <input type="submit" value="log out" class="btn btn-outline-warning"></form>
+  <nav class="navbar is-danger" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+
+      <a class="navbar-item" style="font-family:'Anton', sans-serif; font-size:30px; " href=" /urls">TeenyApp</a>
+
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+        data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
     </div>
-    <% } else{ %>
-    <a href="/login" class="btn btn-outline-warning m-1">Login</a>
-    <a href="/register" class="btn btn-outline-light m-1">register</a>
-    </form>
-    <% } %>
+
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/urls">
+          My URLs
+        </a>
+
+        <a class="navbar-item" href="/urls/new">
+          Create New URL
+        </a>
+
+
+      </div>
+
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <% if(user){ %>
+          <span class='navbar-item has-text-white has-text-weight-bold'>Hi, <%= user.email %> <form class="form-inline"
+              action="/logout" method="POST">
+              &nbsp;</span> <input type="submit" value="log out" class="button is-primary"></form>
+        </div>
+        <% } else{ %>
+        <div class="buttons">
+          <a href="/login" class="button is-warning">login</a>
+          <a href="/register" class="button is-primary">register</a>
+          </form>
+        </div>
+        <% } %>
+      </div>
+    </div>
+    </div>
   </nav>
 </header>
+<script>document.addEventListener('DOMContentLoaded', () => {
+
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+    // Check if there are any navbar burgers
+    if ($navbarBurgers.length > 0) {
+
+      // Add a click event on each of them
+      $navbarBurgers.forEach(el => {
+        el.addEventListener('click', () => {
+
+          // Get the target from the "data-target" attribute
+          const target = el.dataset.target;
+          const $target = document.getElementById(target);
+
+          // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+          el.classList.toggle('is-active');
+          $target.classList.toggle('is-active');
+
+        });
+      });
+    }
+
+  });</script>

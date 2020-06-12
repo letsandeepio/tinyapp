@@ -33,6 +33,7 @@ app.use(
   })
 );
 app.use(methodOverride('_method'));
+app.use(express.static('public'));
 
 app.listen(PORT, () => {
   console.log(`magic port is ${PORT}!`);
@@ -194,4 +195,10 @@ app.get('/login', (req, res) => {
 
 app.get('/users', (req, res) => {
   res.send(JSON.stringify(users));
+});
+
+app.get('/about', (req, res) => {
+  const ID = req.session.user_id;
+  const templateVars = { user: getUserByID(users, ID) };
+  res.render('about', templateVars);
 });

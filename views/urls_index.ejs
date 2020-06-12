@@ -5,59 +5,67 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>TinyApp</title>
+  <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css" rel=stylesheet>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+
+  <title>TeenyApp - My URLs</title>
 </head>
 
 <body>
+
+
   <%- include('partials/_header') %>
 
   <% if(user){ %>
 
-  <main style="margin: 1em;">
-    <h3>My URLs</h3>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Short URL</th>
-          <th scope="col">Long URL</th>
-          <th scope="col">Edit</th>
-          <th scope="col">Delete</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(let url in urls) { %>
-        <tr>
-          <form method="POST" action="urls/<%= url %>/delete?_method=DELETE">
-            <td><%= url %></td>
-            <td><%= urls[url].longURL %></td>
-            <td><a href="urls/<%= url %>" class="btn btn-primary">Edit</td>
-            <td><input type="submit" value="Delete" class="btn btn-outline-danger"></td>
-
-          </form>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
-
-    <% } else{ %>
-    <div class="alert alert-danger" role="alert">
-      You must be logged in to view saved URLS.
+  <section class="section">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <div class="box">
+          <h1 class='title'>My URLs </h1>
+          <table class='table' style="margin:0px; width:100%;">
+            <thead>
+              <tr>
+                <th scope=" col">Short URL</th>
+                <th scope="col">Long URL</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+              </tr>
+            </thead>
+            <tbody class='tbody'>
+              <% for(let url in urls) { %>
+              <tr>
+                <form method="POST" action="urls/<%= url %>/delete?_method=DELETE">
+                  <td><%= url %></td>
+                  <td><%= urls[url].longURL %></td>
+                  <td><a href="urls/<%= url %>" class="button is-success is-light is-small">Edit</td>
+                  <td><input type="submit" value="Delete" class="button is-danger is-light is-small"></td>
+                </form>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <% } %>
-  </main>
-  <!-- Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
+  </section>
+
+
+  <% } else{ %>
+  <section class="hero is-light">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          Hi, there!
+        </h1>
+        <h2 class="subtitle">
+          You must be logged in to view your saved URLs.
+        </h2>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
 </body>
 
 </html>

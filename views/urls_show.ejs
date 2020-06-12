@@ -2,75 +2,112 @@
 <html lang="en">
 
 <head>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css" rel=stylesheet>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+
   <title>URL - TinyApp Example</title>
 </head>
 
 <body>
   <%- include('partials/_header') %>
-  <div class="card text-center">
-    <div class="card-header"></div>
+  <section class="section">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <div class="card">
+          <header class="card-header has-text-centered">
 
-    <h5 class="card-title">TinyURL for: <%= longURL %></h5>
-    <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
-  </div>
+            <span class="card-header-title" style="margin:auto">
+              Shortened URL
+            </span>
 
-  <div class="text-center m-4">
-    <h3>Edit</h3>
-  </div>
-  <div class="container">
-    <div class="d-flex justify-content-center">
-      <div class="d-flex flex-row">
-        <form method="POST" action="<%= shortURL %>?_method=PUT" class="form-inline">
-          <div class="form-group mb-2"></div>
-          <label for="New URL">Enter a new URL:</label>
-          <input class="form-control" type="text" name="newURL" placeholder="http://" style="width: 300px; margin: 1em">
-          <button type="submit" class="btn btn-primary">Edit</button>
-        </form>
+          </header>
+          <div class="card-content">
+            <div class="content">
+              <span class='is-size-3'><%= longURL %> ⇨</span>
+              <a href="/u/<%= shortURL %>" class='is-size-3'><%= shortURL %>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <a href="#" class="card-footer-item">Share</a>
+            <a href="#" class="card-footer-item">Email</a>
+            <a href="#" class="card-footer-item">Copy to Clipboard</a>
+          </footer>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="container">
-    <h1>Total Visits: <%= count %> </h1>
-    <h1>Unique Visits: <%= uniqueCount %> </h1>
-  </div>
+  </section>
+  <section class="section">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <div class="box px-6 py-6">
+          <div class='title is-centered'>
+            <h3>Edit this URL</h3>
+          </div>
+          <form method="POST" action="<%= shortURL %>?_method=PUT">
+            <div class="field has-addons">
+              <div class="control">
+                <input class="input is-expanded" size=50 type="text" name="newURL" placeholder="http://">
+              </div>
+              <div class="control">
+                <button type="submit" class="button is-success">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <section class='section'>
+    <div class="columns is-centered">
+      <div class="column is-one-third">
+        <nav class="level is-mobile">
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Visits</p>
+              <p class="title"><%= count %></p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Unique Visits</p>
+              <p class="title"><%= uniqueCount %></p>
+            </div>
+          </div>
+      </div>
+    </div>
+  </section>
 
-  <h3>My URLs</h3>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">timestamp</th>
-        <th scope="col">visitor</th>
-
-      </tr>
-    </thead>
-    <tbody>
-      <% for(let visit in visits) { %>
-      <tr>
-        <td><%= visits[visit].timestamp %></td>
-        <td><%= visits[visit].visitor_id %></td>
-      </tr>
-      <% } %>
-    </tbody>
-  </table>
-
-  </div>
-
-  <div class="card-footer text-muted"></div>
-  </div>
-  <!-- Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
+  <section class="section">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <table class="table" style="width:100%;">
+          <thead>
+            <tr>
+              <th scope="col">timestamp</th>
+              <th scope="col">visitor_id</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(let visit in visits) { %>
+            <tr>
+              <td><%= visits[visit].timestamp %></td>
+              <td><%= visits[visit].visitor_id %></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 </body>
 
 </html>
+
+
+
+
+
+</nav>
