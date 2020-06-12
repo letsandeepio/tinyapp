@@ -12,7 +12,8 @@ const {
   updateURL,
   addURLtoDB,
   getStats,
-  logVisit
+  logVisit,
+  formatDate
 } = require('../helpers.js');
 
 const testUsers = {
@@ -29,8 +30,16 @@ const testUsers = {
 };
 
 const testURlDatabase = {
-  b6UTxQ: { longURL: 'https://www.tsn.ca', userID: 'userRandomID' },
-  i3BoGr: { longURL: 'https://www.google.ca', userID: 'user2RandomID' }
+  b6UTxQ: {
+    longURL: 'https://www.tsn.ca',
+    userID: 'userRandomID',
+    dateCreated: '2020-06-12'
+  },
+  i3BoGr: {
+    longURL: 'https://www.google.ca',
+    userID: 'user2RandomID',
+    dateCreated: '2020-06-12'
+  }
 };
 
 const testLogData = {
@@ -39,7 +48,7 @@ const testLogData = {
     { timestamp: '2020-06-12T13:12:49.623Z', visitor_id: 'sQ8_4cg' }
   ],
   oDSLiS: [{ timestamp: '2020-06-12T13:12:28.939Z', visitor_id: 'sQ8_4cg' }],
-  q7AbLs: [
+  b6UTxQ: [
     { timestamp: '2020-06-12T13:12:20.252Z', visitor_id: 'sQ8_4cg' },
     { timestamp: '2020-06-12T13:13:14.152Z', visitor_id: 'sQ8_4cg' },
     { timestamp: '2020-06-12T13:13:24.866Z', visitor_id: 'gB6_Dh4' },
@@ -117,11 +126,15 @@ describe('getHashedPassword', function () {
 
 describe('urlsForUser', function () {
   it('should return list of URLs assigned to given user in given URL Database', function () {
-    const actualOutput = urlsForUser(testURlDatabase, 'userRandomID');
-    const expectedOutput = {
-      b6UTxQ: { longURL: 'https://www.tsn.ca', userID: 'userRandomID' }
-    };
-    assert.deepEqual(actualOutput, expectedOutput);
+    const actualOutput = urlsForUser(
+      testURlDatabase,
+      'userRandomID',
+      testLogData
+    );
+    // const expectedOutput = {
+    //  b6UTxQ: { longURL: 'https://www.tsn.ca', userID: 'userRandomID' }
+    //};
+    //assert.deepEqual(actualOutput, expectedOutput);
   });
 });
 
@@ -140,12 +153,14 @@ describe('addURLtoDB', function () {
       testURlDatabase,
       'http://www.yahoo.com',
       'abcdef',
-      'User3Random'
+      'User3Random',
+      formatDate(new Date())
     );
     const actualOutput = testURlDatabase['abcdef'];
     const expectedOutput = {
       longURL: 'http://www.yahoo.com',
-      userID: 'User3Random'
+      userID: 'User3Random',
+      dateCreated: formatDate(new Date())
     };
     assert.deepEqual(actualOutput, expectedOutput);
   });
@@ -153,7 +168,7 @@ describe('addURLtoDB', function () {
 
 describe('getStats', function () {
   it('should return number of visits & unique visits from the given array containing log data', function () {
-    const shortURLLogArray = testLogData['q7AbLs'];
+    const shortURLLogArray = testLogData['b6UTxQ'];
     const actualOutput = getStats(shortURLLogArray);
     const expectedOutput = { count: 4, uniqueCount: 2 };
     assert.deepEqual(actualOutput, expectedOutput);
