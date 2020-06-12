@@ -19,6 +19,7 @@ Program.
 !["Login Page"](https://raw.githubusercontent.com/letsandeepio/tinyapp/master/docs/login.png)
 !["Create Short URL Page"](https://raw.githubusercontent.com/letsandeepio/tinyapp/master/docs/create%20teeny%20url.png)
 !["My URLs page"](https://raw.githubusercontent.com/letsandeepio/tinyapp/master/docs/myURLs.png)
+!["Shortened URL Page"](https://raw.githubusercontent.com/letsandeepio/tinyapp/master/docs/shortenedURL.png)
 !["Inbuilt Short URL Analytics"](https://raw.githubusercontent.com/letsandeepio/tinyapp/master/docs/analytics.png)
 
 ## Dependencies
