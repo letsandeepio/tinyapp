@@ -17,7 +17,8 @@ const {
   updateURL,
   addURLtoDB,
   getStats,
-  logVisit
+  logVisit,
+  addURLtoLogDB
 } = require('./helpers');
 
 const { users, urlDatabase, logDB } = require('./stores');
@@ -35,6 +36,13 @@ app.use(
 app.use(methodOverride('_method'));
 app.use(express.static('public'));
 
+let userIDMiddleWare = (req, res, next) => {
+  req.userID = req.session.user_id;
+  next();
+};
+
+app.use(userIDMiddleWare);
+
 app.listen(PORT, () => {
   console.log(`magic port is ${PORT}!`);
 });
@@ -44,35 +52,34 @@ app.get('/', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  const ID = req.session.user_id;
   const templateVars = {
-    urls: urlsForUser(urlDatabase, ID),
-    user: getUserByID(users, ID)
+    urls: urlsForUser(urlDatabase, req.userID),
+    user: getUserByID(users, req.userID)
   };
   res.render('urls_index', templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
-  const ID = req.session.user_id;
-  res.render('urls_new', { user: getUserByID(users, ID) });
+  res.render('urls_new', { user: getUserByID(users, req.userID) });
 });
 
 app.get('/urls/:url', (req, res) => {
-  const ID = req.session.user_id;
+  const ID = req.userID;
   const shortURL = req.params.url;
 
-  const allVisitsData = logDB[shortURL];
-  const { count, uniqueCount } = getStats(allVisitsData);
-
   if (urlDatabase[shortURL] && urlDatabase[shortURL].userID === ID) {
+    const allVisitsData = logDB[shortURL];
+    const { count, uniqueCount } = getStats(allVisitsData);
+
     const templateVars = {
-      longURL: urlDatabase[req.params.url].longURL,
-      shortURL: req.params.url,
+      longURL: urlDatabase[shortURL].longURL,
+      shortURL: shortURL,
       user: getUserByID(users, ID),
       visits: allVisitsData,
       count: count,
       uniqueCount: uniqueCount
     };
+
     res.render('urls_show', templateVars);
   } else {
     res.status(400).render('error', {
@@ -82,17 +89,19 @@ app.get('/urls/:url', (req, res) => {
   }
 });
 
-const addURLtoLogDB = (loggingDatabase, shortURL) => {
-  loggingDatabase[shortURL] = [];
-};
-
 app.post('/urls', (req, res) => {
-  const ID = req.session.user_id;
-  const longURL = req.body.longURL;
-  const shortURL = generateRandomString(6);
-  addURLtoDB(urlDatabase, longURL, shortURL, ID);
-  addURLtoLogDB(logDB, shortURL);
-  res.redirect(`/urls/${shortURL}`);
+  if (req.userID) {
+    const longURL = req.body.longURL;
+    const shortURL = generateRandomString(6);
+    addURLtoDB(urlDatabase, longURL, shortURL, req.userID);
+    addURLtoLogDB(logDB, shortURL);
+    res.redirect(`/urls/${shortURL}`);
+  } else {
+    res.status(400).render('error', {
+      error: '400 -  Bad Request.',
+      user: undefined
+    });
+  }
 });
 
 app.get('/u/:shortURL', (req, res) => {
@@ -117,8 +126,7 @@ app.get('/u/:shortURL', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  const ID = req.session.user_id;
-  const templateVars = { user: getUserByID(users, ID) };
+  const templateVars = { user: getUserByID(users, req.userID) };
 
   res.render('register', templateVars);
 });
@@ -146,9 +154,8 @@ app.post('/register', (req, res) => {
 });
 
 app.delete('/urls/:shortURL/delete', (req, res) => {
-  const ID = req.session.user_id;
   const shortURL = req.params.shortURL;
-  if (urlDatabase[shortURL].userID === ID) {
+  if (urlDatabase[shortURL].userID === req.userID) {
     delete urlDatabase[req.params.shortURL];
     res.redirect(`/urls`);
   } else {
@@ -160,9 +167,8 @@ app.delete('/urls/:shortURL/delete', (req, res) => {
 });
 
 app.put('/urls/:shortURL', (req, res) => {
-  const ID = req.session.user_id;
   const shortURL = req.params.shortURL;
-  if (urlDatabase[shortURL].userID === ID) {
+  if (urlDatabase[shortURL].userID === req.userID) {
     const newURL = req.body.newURL;
     updateURL(urlDatabase, shortURL, newURL);
     res.redirect(`/urls`);
@@ -204,8 +210,7 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  const ID = req.session.user_id;
-  const templateVars = { user: getUserByID(users, ID) };
+  const templateVars = { user: getUserByID(users, req.userID) };
   res.render('login', templateVars);
 });
 
@@ -214,7 +219,6 @@ app.get('/users', (req, res) => {
 });
 
 app.get('/about', (req, res) => {
-  const ID = req.session.user_id;
-  const templateVars = { user: getUserByID(users, ID) };
+  const templateVars = { user: getUserByID(users, req.userID) };
   res.render('about', templateVars);
 });

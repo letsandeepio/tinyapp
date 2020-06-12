@@ -75,6 +75,10 @@ const logVisit = (visitorID, shortURL, logDatabase) => {
   });
 };
 
+const addURLtoLogDB = (loggingDatabase, shortURL) => {
+  loggingDatabase[shortURL] = [];
+};
+
 module.exports = {
   generateRandomString,
   getUserByID,
@@ -86,5 +90,6 @@ module.exports = {
   updateURL,
   addURLtoDB,
   getStats,
-  logVisit
+  logVisit,
+  addURLtoLogDB
 };
