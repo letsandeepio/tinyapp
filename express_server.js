@@ -16,7 +16,8 @@ const {
   urlsForUser,
   updateURL,
   addURLtoDB,
-  getStats
+  getStats,
+  logVisit
 } = require('./helpers');
 
 const { users, urlDatabase, logDB } = require('./stores');
@@ -93,15 +94,6 @@ app.post('/urls', (req, res) => {
   addURLtoLogDB(logDB, shortURL);
   res.redirect(`/urls/${shortURL}`);
 });
-
-const logVisit = (visitorID, shortURL, logDatabase) => {
-  if (!logDatabase[shortURL]) logDatabase[shortURL] = [];
-  logDatabase[shortURL].push({
-    timestamp: new Date(),
-    visitor_id: visitorID
-  });
-  console.log(logDatabase);
-};
 
 app.get('/u/:shortURL', (req, res) => {
   const shortURLObject = urlDatabase[req.params.shortURL];

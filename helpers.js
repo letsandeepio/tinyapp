@@ -67,6 +67,15 @@ const caculateUniqueVisits = (array, attribute) => {
   return unique.length;
 };
 
+const logVisit = (visitorID, shortURL, logDatabase) => {
+  if (!logDatabase[shortURL]) logDatabase[shortURL] = [];
+  logDatabase[shortURL].push({
+    timestamp: new Date(),
+    visitor_id: visitorID
+  });
+  console.log(logDatabase);
+};
+
 module.exports = {
   generateRandomString,
   getUserByID,
@@ -77,5 +86,6 @@ module.exports = {
   urlsForUser,
   updateURL,
   addURLtoDB,
-  getStats
+  getStats,
+  logVisit
 };
