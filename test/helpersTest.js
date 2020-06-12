@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable space-before-function-paren */
 const { assert } = require('chai');
 const {

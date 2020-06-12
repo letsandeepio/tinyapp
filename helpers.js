@@ -1,3 +1,4 @@
+//generate random string including alpha & numbers with n length
 const generateRandomString = (n) => {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUXYZ123456789';
   let random = '';
@@ -10,14 +11,17 @@ const generateRandomString = (n) => {
   return random;
 };
 
+//add given url to the given url database
 const addURLtoDB = (db, longURL, shortURL, userID, dateCreated) => {
   db[shortURL] = { longURL, userID, dateCreated };
 };
 
+//return user object with the given id
 const getUserByID = (users, ID) => {
   return users[ID];
 };
 
+//add new user to the database
 const addUserToDB = (users, id, email, password) => {
   users[id] = {
     id,
@@ -26,6 +30,7 @@ const addUserToDB = (users, id, email, password) => {
   };
 };
 
+//check if user with the given email exists in the database or not
 const isEmailRegistered = (users, email) => {
   for (const user in users) {
     if (users[user].email === email) return true;
@@ -33,10 +38,12 @@ const isEmailRegistered = (users, email) => {
   return false;
 };
 
+//return user password (which is already hashed &stored) in database
 const getHashedPassword = (users, email) => {
   return Object.values(users).find((user) => user.email === email).password;
 };
 
+//find user ID by given email in database
 const getUserIDByEmail = (users, email) => {
   const user = Object.values(users).find((user) => user.email === email);
   return user ? user.id : undefined;
@@ -53,16 +60,19 @@ const urlsForUser = (database, id, logDB) => {
   }, {});
 };
 
+//update the given shortURl to the new given Long url
 const updateURL = (db, shortURL, newURL) => {
   db[shortURL].longURL = newURL;
 };
 
+//return an object containing count & uniqueCount for the given log data in array
 const getStats = (array) => {
   const count = array.length;
   const uniqueCount = caculateUniqueVisits(array, 'visitor_id');
   return { count, uniqueCount };
 };
 
+//utitliy helper function to calculate unique visits - uses in getStats
 const caculateUniqueVisits = (array, attribute) => {
   let unique = [];
   for (const item of array) {
@@ -71,6 +81,7 @@ const caculateUniqueVisits = (array, attribute) => {
   return unique.length;
 };
 
+//make a visitor entry log in the log database
 const logVisit = (visitorID, shortURL, logDatabase) => {
   if (!logDatabase[shortURL]) logDatabase[shortURL] = [];
   logDatabase[shortURL].push({
@@ -79,11 +90,12 @@ const logVisit = (visitorID, shortURL, logDatabase) => {
   });
 };
 
+//add given URL to DB
 const addURLtoLogDB = (loggingDatabase, shortURL) => {
   loggingDatabase[shortURL] = [];
 };
 
-//copied from stackoverflow
+//copied from stackoverflow to format the date properly for display
 const formatDate = (date) => {
   let d = new Date(date);
   let month = '' + (d.getMonth() + 1);
