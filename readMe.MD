@@ -2,11 +2,6 @@
 
 TinyApp (rebranded as TeenyApp) is a full stack web application built with Node, Express and Bulma.css that allows users to shorten long URLs (à la bit.ly).
 
-# About
-
-TeenyApp is pretty product of labor of love, built with ❤️ in beautiful toronto by <a href='https://github.com/letsandeepio'>Sandeep</a>.
-Submitted as Project #1 for <a href='https://www.lighthouselabs.ca/'>Lighthouse Labs</a> Web Development
-Program.
 
 ## Salient Technical Features
 
